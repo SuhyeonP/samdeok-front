@@ -1,0 +1,5 @@
+.select-login li{
+    padding: 0 10px;
+    display: inline-block;
+    cursor: pointer;
+}
