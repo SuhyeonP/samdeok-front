@@ -2,7 +2,9 @@ import *as React from "react";
 import {gql} from "apollo-boost"
 import {ObjectID} from 'mongodb'
 import {Query} from "@apollo/client/react/components";
-import {useCallback} from "react";
+import {useCallback, useState} from "react";
+import BigTable from "../reservation/bigtable";
+import TimeZone from "../reservation/timezone";
 
 
 interface Props {
@@ -20,6 +22,7 @@ interface SID {
 }
 
 const MiniShop: React.FunctionComponent<SID> = ({storeId}) => {
+
     const ID = "\"" + storeId + "\""
     const GET_STORE = gql`
         query {
@@ -32,10 +35,18 @@ const MiniShop: React.FunctionComponent<SID> = ({storeId}) => {
             }
         }
     `
-    const gotoReservation=useCallback((id:ObjectID)=>{
+    const gotoReservation=useCallback((id:ObjectID,shopName:string)=>{
         console.log(id)
+        const uid=document.getElementById('user-info')
+        if(uid){
+            document.getElementById(`${id}`)!.style.display='block';
+        }else{
+            alert('사용자 로그인이 필요합니다.')
+        }
 
     },[])
+
+
 
     return (
         <>
@@ -47,16 +58,18 @@ const MiniShop: React.FunctionComponent<SID> = ({storeId}) => {
                         <>
                             {Array(data!.getStore).map(({_id, shopName, address, part, shopSns}) => {
                                 return (
-                                    <tr>
-                                        <td>{_id}</td>
-                                        <td>{shopName}</td>
-                                        <td>{address}</td>
-                                        <td>{part}</td>
-                                        <td>{shopSns === null ? null : shopSns}</td>
-                                        <button onClick={()=>gotoReservation(_id)}>
-                                            예약하기
-                                        </button>
-                                    </tr>
+                                    <>
+                                        <tr>
+                                            <td className="table-id">{_id}</td>
+                                            <td>{shopName}</td>
+                                            <td>{address}</td>
+                                            <td>{part}</td>
+                                            <td>{shopSns === null ? null : shopSns}</td>
+                                            <button onClick={()=>gotoReservation(_id,shopName)}>
+                                                예약하기
+                                            </button>
+                                        </tr>
+                                    </>
                                 )
                             })}
                         </>

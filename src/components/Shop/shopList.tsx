@@ -3,6 +3,8 @@ import { gql } from "apollo-boost"
 import {Query} from "@apollo/client/react/components";
 import MiniShop from "./miniShop";
 import {ObjectID } from 'mongodb'
+import BigTable from "../reservation/bigtable";
+import TimeZone from "../reservation/timezone";
 
 
 const GET_STORES=gql`
@@ -23,11 +25,11 @@ const ShopList=()=>{
 
     return (
         <>
-            <table>
+            <table className="store-table">
                 <thead>
                 <tr>
-                    <td>Shop</td>
-                    <td>Address</td>
+                    <th>Shop</th>
+                    <th>Address</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -38,7 +40,12 @@ const ShopList=()=>{
                             return(
                                 <>
                                     {data!.allStores.map(({_id})=>{
-                                        return <MiniShop storeId={_id}/>
+                                        return(
+                                            <>
+                                                <MiniShop storeId={_id}/>
+                                            </>
+
+                                        )
                                     })}
                                 </>
                             )
@@ -46,7 +53,31 @@ const ShopList=()=>{
                     </Query>
                 </tbody>
             </table>
+            <Query<Data> query={GET_STORES}>
+                {({loading,error,data})=>{
+                    if(loading)return <p>wait a sec</p>
+                    if(error)return <p>sorry do later</p>
+                    return(
+                        <>
+                            <div id="other-erase">
+                                {data!.allStores.map(({_id})=>{
+                                    return(
+                                        <>
+                                            <div className="reservation-store" id={_id.toString()}>
+                                                <BigTable/>
+                                                <TimeZone/>
+                                            </div>
+                                        </>
+
+                                    )
+                                })}
+                            </div>
+                        </>
+                    )
+                }}
+            </Query>
         </>
     )
 }
 export default ShopList;
+
