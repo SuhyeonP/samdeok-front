@@ -75,6 +75,9 @@ const LoginForm: React.FunctionComponent = () => {
 
     const Breakout = useCallback(() => {
         logout(false)
+        if(document.getElementById('user-info')){
+            document.getElementById('user-info')!.removeAttribute('id')
+        }
     }, [])
 
 

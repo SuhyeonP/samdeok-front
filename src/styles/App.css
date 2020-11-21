@@ -10,6 +10,8 @@ abbr{
 }
 .reservation-store{
     display:none;
+    position: relative;
+    height: 350px;
 }
 .reservation-store>div{
     text-align: center;
@@ -40,6 +42,9 @@ abbr{
 .time-zone{
     width: 70vw;
     margin: 0 auto;
+    display: none;
+    position: absolute;
+    left: 14vw;
 }
 .time-zone>div{
     display: inline-block;
