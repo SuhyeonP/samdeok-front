@@ -47,7 +47,11 @@ abbr{
     left: 14vw;
 }
 .time-zone>div{
-    display: inline-block;
+    display: block;
+}
+.ant-tabs-nav{
+    width: 80%;
+    margin: 12px auto;
 }
 .ant-tabs-nav-list{
     display: flex;
@@ -57,9 +61,14 @@ abbr{
     display: none;
 }
 .ant-tabs-tab{
-    display: inline-block;
+    display: inline-table;
     width: 50px;
-    height: 20px;
+    height: 30px;
+    cursor: pointer;
+}
+.ant-tabs-tab>div{
+    display: table-cell;
+    vertical-align: middle;
 }
 .ant-tabs-nav-operations{
     display: none;
@@ -75,4 +84,14 @@ abbr{
 th{
     display: inline-block;
     padding-right: 12px;
+}
+.ant-tabs-tab-active{
+    background: palegreen;
+}
+.ant-tabs-content-holder{
+    padding-top: 15px;
+    display: inline-block;
+}
+.gotoCheck{
+    margin-top: 12px;
 }

@@ -48,19 +48,24 @@ const BigTable:React.FunctionComponent<Props>=({catchId})=>{
     },[styleId])
     const week=Array(7).fill(0)
     if(day===0){
+        let h=new Date()
+        h.setHours(0)
+        h.setMinutes(0)
+        h.setSeconds(0)
         for(let i=0;i<7;i++){
-            let h=new Date()
             h.setDate(h.getDate()+i)
             week[i]=h.getDate()
         }
     }else{
+        let h=new Date()
+        h.setHours(0)
+        h.setMinutes(0)
+        h.setSeconds(0)
         for(let i=day+1;i<7;i++){
-            let h=new Date()
             h.setDate(h.getDate()+i)
             week[i]=h.getDate()
         }
         for(let i=0;i<day;i++){
-            let h=new Date()
             h.setDate(h.getDate()+7-day+i)
             week[i]=h.getDate()
         }
@@ -69,7 +74,6 @@ const BigTable:React.FunctionComponent<Props>=({catchId})=>{
 
 
 
-    console.log(year,month,date,days[day],day)
     return(
         <>
             <Query<Shop,{}> query={GET_STORE}>
@@ -90,7 +94,7 @@ const BigTable:React.FunctionComponent<Props>=({catchId})=>{
                                                                 {ele}({week[ind]})
                                                             </div>
                                                         </div>
-                                                        <TimeZone master={_id} addId={ind} open={openTime} close={closeTime} name={shopName}/>
+                                                        <TimeZone master={_id} takeDay={week[ind]} theDay={theDay} addId={ind} open={openTime} close={closeTime} name={shopName}/>
                                                     </>
                                                 )
                                             })}
