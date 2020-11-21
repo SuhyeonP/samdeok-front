@@ -57,15 +57,19 @@ const BigTable:React.FunctionComponent<Props>=({catchId})=>{
             week[i]=h.getDate()
         }
     }else{
-        let h=new Date()
-        h.setHours(0)
-        h.setMinutes(0)
-        h.setSeconds(0)
         for(let i=day+1;i<7;i++){
+            let h=new Date()
+            h.setHours(0)
+            h.setMinutes(0)
+            h.setSeconds(0)
             h.setDate(h.getDate()+i)
             week[i]=h.getDate()
         }
         for(let i=0;i<day;i++){
+            let h=new Date()
+            h.setHours(0)
+            h.setMinutes(0)
+            h.setSeconds(0)
             h.setDate(h.getDate()+7-day+i)
             week[i]=h.getDate()
         }

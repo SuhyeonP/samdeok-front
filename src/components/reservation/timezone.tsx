@@ -1,8 +1,11 @@
 import *as React from 'react'
 import {Tabs} from "antd";
 import {days} from "./bigtable";
-import {useCallback, useEffect, useState} from "react";
+import { useCallback, useEffect, useState,memo,useMemo} from "react";
 import { ObjectID } from 'mongodb';
+import {gql} from "apollo-boost";
+import {Mutation, Query} from "@apollo/client/react/components";
+import {useMutation} from "@apollo/client";
 
 const {TabPane}=Tabs;
 
@@ -16,7 +19,15 @@ interface Props{
     name:string;
 }
 
-const TimeZone:React.FunctionComponent<Props>=({master,takeDay,theDay,addId,open,close,name})=>{
+interface dupCheck{
+    dupCheckReservation:[{
+        checkShop:ObjectID;
+        checkUser:ObjectID;
+        time:Date;
+    }]
+}
+
+const TimeZone:React.FunctionComponent<Props>=memo(({master,takeDay,theDay,addId,open,close,name})=>{
     const newId=master!.toString().slice(master.toString().length-4,master.toString().length)
     const divId="reservation-time"+addId.toString()+newId
     const [timeArr,setTimeArr]=useState<number[]>([])
@@ -25,6 +36,25 @@ const TimeZone:React.FunctionComponent<Props>=({master,takeDay,theDay,addId,open
     const [load,setLoad]=useState(false)
     const [secLoad,setSLoad]=useState(false)
 
+    const [timeSet,setTime]=useState<Date>(new Date())
+
+    useEffect(()=>{
+        setTime(prev=>{
+            prev.setSeconds(0)
+            prev.setMinutes(0)
+            return prev;
+        })
+    },[])
+
+    const DUP_RESERVE=gql`
+        query{
+          dupCheckReservation(checkShop:${"\""+master+"\""},time:${"\""+timeSet+"\""}){
+            checkShop
+            checkUser
+            time
+          }
+        }
+    `
     useEffect(()=>{
         setLoad(true)
         if(load){
@@ -54,11 +84,6 @@ const TimeZone:React.FunctionComponent<Props>=({master,takeDay,theDay,addId,open
         }
     },[load])
 
-    const goToCheck=useCallback((id:ObjectID,time:Date)=>{
-        console.log(time,id)
-    },[])
-
-
     return(
         <>
             <div className="time-zone" id={divId}>
@@ -70,9 +95,21 @@ const TimeZone:React.FunctionComponent<Props>=({master,takeDay,theDay,addId,open
                                 return (
                                     <>
                                         <TabPane id={"asdf"+ind} tab={ele+"시"} key={ind+1}>
-                                            {dayArr2[ind]}
                                             <br/>
-                                            <button onClick={()=>goToCheck(master,dayArr[ind])} className="gotoCheck">예약하기</button>
+                                            <Query<dupCheck> query={DUP_RESERVE}>
+                                                {({loading,error,data})=>{
+                                                    if(loading)return <p>wait</p>
+                                                    if(error)return <p>we try best</p>
+                                                    if(data===null){
+                                                        return <p>{dayArr2[ind]}</p>
+                                                    }
+                                                    return(
+                                                        <>
+                                                            <p>{dayArr2[ind]}밖data null아닐때</p>
+                                                        </>
+                                                    )
+                                                }}
+                                            </Query>
                                         </TabPane>
                                     </>
                                     )
@@ -87,6 +124,28 @@ const TimeZone:React.FunctionComponent<Props>=({master,takeDay,theDay,addId,open
             </div>
         </>
     )
-}
+})
 
 export default TimeZone;
+
+
+// const CHECK_RESERVE=gql`
+//                         mutation{
+//                             createReservation(input:{
+//                                 time:$sTime
+//                                 checkShop:$Sid
+//                                 checkUser:$uid
+//                               }){
+//                                 time
+//                                 checkShop
+//                                 checkUser
+//                               }
+//                         }
+//                     `
+// const mutation=useMutation(CHECK_RESERVE,{
+//     variables:{
+//         sTime,
+//         Sid,
+//         uid
+//     }
+// })

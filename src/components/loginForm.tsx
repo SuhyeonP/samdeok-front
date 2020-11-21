@@ -94,11 +94,11 @@ const LoginForm: React.FunctionComponent = () => {
                                     if(error)return <p>retry</p>
                                     return(
                                         <>
-                                            {Array(data!.loginUser).map(({name,snsId})=>{
+                                            {Array(data!.loginUser).map(({name,snsId,_id})=>{
                                                 return(
                                                     <>
                                                         <div>Hi<p id="user-info">{name}</p></div>
-                                                        <input hidden id="user-value" value={snsId}/>
+                                                        <p hidden id="user-Oid">{_id}</p>
                                                     </>
                                                 )
                                             })}
